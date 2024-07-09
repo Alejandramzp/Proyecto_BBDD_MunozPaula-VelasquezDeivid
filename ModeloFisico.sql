@@ -1,6 +1,5 @@
--- Active: 1720307300565@@172.16.101.155@3306@Ambientales
 -- ################################
--- ###### Creacion de tablas ######
+-- ###### Creacion de Tablas ######
 -- ################################
 
 create database Ambientales;
@@ -9,7 +8,7 @@ use Ambientales;
 
 create table entidad (
     id_entidad INT AUTO_INCREMENT PRIMARY KEY,
-    nombre varchar(100) NOT NULL
+    nombre VARCHAR(100) NOT NULL
 );
 
 create table departamento (
@@ -59,19 +58,19 @@ create table especie (
 create table personal (
     id_personal INT AUTO_INCREMENT PRIMARY KEY,
     id_parque INT NOT NULL,
-    cedula INT(20) UNIQUE NOT NULL,
+    cedula VARCHAR(20) UNIQUE NOT NULL,
     nombre VARCHAR(100) NOT NULL,
-    direccion VARCHAR(200) NOT NULL,
-    telefono INT(50),
-    celular int(50) NOT NULL,
-    sueldo INT(20) NOT NULL 
+    direccion VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    celular VARCHAR(20) NOT NULL,
+    sueldo DECIMAL(10,2) NOT NULL 
 );
 
 create table personal_gestion (
     id_gestion INT AUTO_INCREMENT PRIMARY KEY,
     id_personal INT NOT NULL,
     Foreign Key (id_personal) REFERENCES personal(id_personal),
-    n_entrada INT(3) NOT NULL
+    n_entrada INT(10) NOT NULL
 );
 
 create table personal_vigilancia (
@@ -103,7 +102,7 @@ create table personal_investigador (
 create table proyecto (
     id_proyecto INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
-    presupuesto DECIMAL(12,2) NOT NULL,
+    presupuesto DECIMAL(10,2) NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL
 );
@@ -122,7 +121,7 @@ create table visitante(
     id_visitante INT AUTO_INCREMENT PRIMARY KEY,
     id_personal_gestion INT NOT NULL,
     Foreign Key (id_personal_gestion) REFERENCES personal_gestion(id_gestion),
-    cedula INT(20) UNIQUE NOT NULL,
+    cedula VARCHAR(20) UNIQUE NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
     profesion VARCHAR(100)
@@ -139,6 +138,4 @@ create table alojamiento (
     fecha_final DATE NOT NULL
 );
 
-
-
-
+SHOW TABLES;
