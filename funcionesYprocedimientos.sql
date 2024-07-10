@@ -1,9 +1,8 @@
--- Active: 1720143799702@@127.0.0.1@3306@ambientales
 -- ########################################
 -- ###### FUnciones y Procedimientos ######
 -- ########################################
 
-use ambientales;
+use Ambientales;
 
 
 -- Añadir una Entidad
@@ -275,3 +274,294 @@ delimiter ;
 call añadir_personal_gestion (1, 1);
 
 -- actualizar personal de gestion
+delimiter //
+create procedure actualizar_personal_gestion(p_id_gestion int, p_id_personal int, p_n_entrada int)
+begin
+    declare v_id_parque int;
+    declare v_N_entradas int;
+    declare v_error_msg VARCHAR(225);
+
+    select p.id_parque, p.N_entradas
+    into v_id_parque, v_N_entradas
+    from personal_gestion pg
+    join personal pe on pg.id_personal = pe.id_personal
+    join parque p on pe.id_parque = p.id_parque
+    where pg.id_gestion = p_id_gestion;
+
+    if p_n_entrada < 1 or p_n_entrada > v_N_entradas THEN
+    set v_error_msg = concat('EL número de entrada debe estar dentro del rango de 1 a ', cast(v_N_entradas as char));
+    signal sqlstate '45000' set MESSAGE_TEXT = v_error_msg;
+    end if;
+
+    if exists (select 1 from personal_gestion pg join personal pe on pg.id_personal = pe.id_personal
+                where pe.id_parque = v_id_parque and pg.n_entrada = v_N_entradas and pg.id_gestion <> p_id_gestion) THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'El número de entradas ya esta ocupado para este parque';
+    end if;
+
+    update personal_gestion
+    set id_personal = p_id_personal, n_entrada = p_n_entrada
+    where id_gestion = p_id_gestion;
+end //
+delimiter ;
+
+-- Añadir personal_vigilancia
+delimiter //
+create procedure añadir_personal_vigilancia(p_id_personal int, p_id_area int, p_tipo_vehiculo varchar(100), p_marca_vehiculo varchar(100))
+begin
+    if (select count(*) from personal where id_personal = p_id_personal) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal no existente';
+    elseif (select count(*) from area where id_area = p_id_area) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Area no existente';
+    else
+    
+    insert into personal_vigilancia(id_personal, id_area, tipo_vehiculo, marca_vehiculo)
+    value (p_id_personal, p_id_area, p_tipo_vehiculo, p_marca_vehiculo);
+    end if;
+end //
+delimiter ;
+
+-- Actualizar personal_vigilancia 
+delimiter //
+create procedure actualizar_personal_vigilancia (p_id_vigilancia int, p_id_personal int, p_id_area int, p_tipo_vehiculo varchar(100), p_marca_vehiculo varchar(100))
+begin
+    if (select count(*) from personal_vigilancia where id_vigilancia = p_id_vigilancia) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal de vigilancia no existente';
+    elseif (select count(*) from personal where id_personal = p_id_personal) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal no existente';
+    elseif (select count(*) from area where id_area = p_id_area) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Area no existente';
+    else
+    update personal_vigilancia
+    set id_personal = p_id_personal, id_area = p_id_area, tipo_vehiculo = p_tipo_vehiculo, marca_vehiculo = p_marca_vehiculo
+    where id_vigilancia = p_id_vigilancia;
+    end if;
+end //
+delimiter ;
+
+-- Añadir personal_conservacion
+delimiter //
+create procedure añadir_personal_conservacion(p_id_personal int, p_id_area int, p_especialidad ENUM('limpieza', 'caminos', 'alojamiento'))
+begin
+    if (select count(*) from personal where id_personal = p_id_personal) = 0 THEN
+            signal sqlstate '45000' set MESSAGE_TEXT = 'Personal no existente';
+    elseif (select count(*) from area where id_area = p_id_area) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Area no existente';
+    else
+    insert into personal_conservacion(id_personal, id_area, especialidad)
+    value (p_id_personal, p_id_area, p_especialidad);
+    end if;
+end //
+delimiter ;
+
+-- Actualizar personla_conservacion
+delimiter //
+create procedure actualizar_personal_conservacion (p_id_conservacion int, p_id_personal int, p_id_area int, p_especialidad enum('limpieza', 'caminos', 'alojamientos'))
+begin
+    if (select count(*) from personal_conservacion where id_conservacion = p_id_conservacion) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal de conservacion no existente';
+    elseif (select count(*) from personal where id_personal = p_id_personal) = 0 THEN
+            signal sqlstate '45000' set MESSAGE_TEXT = 'Personal no existente';
+    elseif (select count(*) from area where id_area = p_id_area) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Area no existente';
+    else
+    update personal_conservacion
+    set id_personal = p_id_personal, id_area = p_id_area, especialidad = p_especialidad
+    where id_conservacion = p_id_conservacion;
+    end if;
+end //
+delimiter ;
+
+-- Añadir personal_investigador
+delimiter //
+create procedure añadir_personal_investigador(p_id_personal int, p_titulacion varchar(100))
+begin
+    if (select count(*) from personal where id_personal = p_id_personal) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal no existente';
+    else
+        insert into personal_investigador( id_personal, titulacion)
+        value (p_id_personal, p_titulacion);
+    end if;
+end //
+delimiter ;
+
+-- Actualizar personal_investigador
+delimiter //
+create procedure actualizar_personal_investigador(p_id_investigador int, p_id_personal int, p_titulacion varchar(100))
+begin
+    if (select count(*) from personal_investigador where id_investigador = p_id_investigador) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal investigador no encontrado';
+    elseif (select count(*) from personal where id_personal = p_id_personal) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal no existente';
+    else
+    update personal_investigador
+    set id_personal = p_id_personal, titulacion = p_titulacion
+    where id_investigador = p_id_investigador;
+    end if;
+end //
+delimiter ;
+
+-- Añadir proyecto
+delimiter //
+create procedure añadir_proyecto (p_nombre varchar(100), p_presupuesto decimal(10,2), p_fecha_inicio date, p_fecha_fin date)
+begin
+    insert into proyecto(nombre, presupuesto, fecha_inicio, fecha_fin)
+    value (p_nombre, p_presupuesto, p_fecha_inicio, p_fecha_fin);
+end //
+delimiter ;
+
+-- Actualizar proyecto
+delimiter //
+create procedure actualizar_proyecto(p_id_proyecto int, p_nombre varchar(100), p_presupuesto decimal(10,2), p_fecha_inicio date, p_fecha_fin date)
+begin
+    if (select count(*) from proyecto where id_proyecto = p_id_proyecto) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Proyecto no existente';
+    else
+        update proyecto
+        set nombre = p_nombre, presupuesto = p_presupuesto, fecha_inicio = p_fecha_inicio, fecha_fin = p_fecha_fin
+        where id_proyecto = p_id_proyecto;
+    end if;
+end //
+delimiter ;
+
+-- Relaciona una investigacion
+delimiter //
+create procedure relacion_investigacion(r_id_proyecto int, r_id_investigador int, r_id_especie int)
+begin
+    if (select count(*) from proyecto where id_proyecto = r_id_proyecto) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Proyecto no existente';
+    elseif (select count(*) from personal_investigador where id_investigador = r_id_investigador) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Investigador no existente';
+    elseif (select count(*) from especie where id_especie = r_id_especie) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Especie no existente';
+    else
+        insert into investigacion(id_proyecto, id_investigador, id_especie)
+        value (r_id_proyecto, r_id_investigador, r_id_especie);
+    end if;
+end //
+delimiter ;
+
+-- Actualizar relacion de una investigacion
+delimiter //
+create procedure actualizar_investigacion(r_id_proyecto int, r_id_investigador int, r_id_especie int, nuevo_id_proyecto int, nuevo_id_investigador int, nuevo_id_especie int)
+begin
+    if (select count(*) from proyecto where id_proyecto = r_id_proyecto) = 0 then
+        signal sqlstate '45000' set message_text = 'proyecto no existente';
+    elseif (select count(*) from personal_investigador where id_investigador = r_id_investigador) = 0 then
+        signal sqlstate '45000' set message_text = 'investigador no existente';
+    elseif (select count(*) from especie where id_especie = r_id_especie) = 0 then
+        signal sqlstate '45000' set message_text = 'especie no existente';
+    elseif (select count(*) from proyecto where id_proyecto = nuevo_id_proyecto) = 0 then
+        signal sqlstate '45000' set message_text = 'nuevo proyecto no existente';
+    elseif (select count(*) from personal_investigador where id_investigador = nuevo_id_investigador) = 0 then
+        signal sqlstate '45000' set message_text = 'nuevo investigador no existente';
+    elseif (select count(*) from especie where id_especie = nuevo_id_especie) = 0 then
+        signal sqlstate '45000' set message_text = 'nueva especie no existente';
+    else
+        update investigacion
+        set id_proyecto = nuevo_id_proyecto,
+            id_investigador = nuevo_id_investigador,
+            id_especie = nuevo_id_especie
+        where id_proyecto = r_id_proyecto
+          and id_investigador = r_id_investigador
+          and id_especie = r_id_especie;
+    end if;
+end //
+delimiter ;
+
+-- Añadir visitante
+delimiter //
+create procedure añadir_visitante(v_id_personal_gestion int, v_cedula varchar(20), v_nombre varchar(100), v_direccion varchar(100), v_profesion varchar(100))
+begin
+    if (select count(*) from personal_gestion where id_gestion = v_id_personal_gestion) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal de gestion no existente';
+    else
+        insert into visitante(id_personal_gestion, cedula, nombre, direccion, profesion)
+        value (v_id_personal_gestion, v_cedula, v_nombre, v_direccion, v_profesion);
+    end if;
+end //
+delimiter ;
+
+-- Actualizar visitante por id
+delimiter //
+create procedure actualizar_visitante(v_id_visitante int, v_id_personal_gestion int, v_cedula varchar(20), v_nombre varchar(100), v_direccion varchar(100), v_profesion varchar(100))
+begin
+    if (select count(*) from visitante where id_visitante = v_id_visitante) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Visitante no existente';
+    elseif (select count(*) from personal_gestion where id_gestion = v_id_personal_gestion) = 0 THEN
+        signal sqlstate '45000' set MESSAGE_TEXT = 'Personal de gestion no existente';
+    else
+        update visitante
+        set id_personal_gestion = v_id_personal_gestion, cedula = v_cedula, nombre = v_nombre, direccion = v_direccion, profesion = v_profesion
+        where id_visitante = v_id_visitante;
+    end if;
+end //
+delimiter ;
+
+-- añadir alojamiento
+delimiter //
+create procedure anadir_alojamiento (p_id_visitante int, p_nombre varchar(100), p_capacidad int, p_categoria enum('Cabaña', 'Camping', 'Hotel', 'Hostales'), p_fecha_inicio date, p_fecha_final date)
+begin
+    declare v_capacidad_actual int;
+    declare v_capacidad_maxima int;
+    declare v_error_msg varchar(255);
+
+    select capacidad into v_capacidad_maxima
+    from alojamiento
+    where nombre = p_nombre
+      and categoria = p_categoria
+    limit 1;
+
+    select count(*) into v_capacidad_actual
+    from alojamiento
+    where nombre = p_nombre
+      and categoria = p_categoria
+      and ((p_fecha_inicio between fecha_inicio and fecha_final) 
+           or (p_fecha_final between fecha_inicio and fecha_final) 
+           or (fecha_inicio between p_fecha_inicio and p_fecha_final) 
+           or (fecha_final between p_fecha_inicio and p_fecha_final));
+
+    if v_capacidad_actual + 1 > v_capacidad_maxima then
+        set v_error_msg = 'Capacidad excedida para el alojamiento ' || p_nombre || ' en las fechas especificadas';
+        signal sqlstate '45000' set message_text = v_error_msg;
+    else
+        insert into alojamiento (id_visitante, nombre, capacidad, categoria, fecha_inicio, fecha_final) 
+        values (p_id_visitante, p_nombre, p_capacidad, p_categoria, p_fecha_inicio, p_fecha_final);
+    end if;
+end //
+delimiter ;
+
+-- Actualizar alojamiento
+
+delimiter //
+create procedure actualizar_alojamiento (p_id_alojamiento int, p_id_visitante int, p_nombre varchar(100), p_capacidad int, p_categoria enum('Cabaña', 'Camping', 'Hotel', 'Hostales'), p_fecha_inicio date, p_fecha_final date)
+begin
+    declare v_capacidad_actual int;
+    declare v_capacidad_maxima int;
+    declare v_error_msg varchar(255);
+
+    select capacidad into v_capacidad_maxima
+    from alojamiento
+    where nombre = p_nombre
+      and categoria = p_categoria
+    limit 1;
+
+    select count(*) into v_capacidad_actual
+    from alojamiento
+    where nombre = p_nombre
+      and categoria = p_categoria
+      and id_alojamiento <> p_id_alojamiento
+      and ((p_fecha_inicio between fecha_inicio and fecha_final) 
+           or (p_fecha_final between fecha_inicio and fecha_final) 
+           or (fecha_inicio between p_fecha_inicio and p_fecha_final) 
+           or (fecha_final between p_fecha_inicio and p_fecha_final));
+
+    if v_capacidad_actual + 1 > v_capacidad_maxima then
+        set v_error_msg = 'Capacidad excedida para el alojamiento ' || p_nombre || ' en las fechas especificadas';
+        signal sqlstate '45000' set message_text = v_error_msg;
+    else
+        update alojamiento
+        set id_visitante = p_id_visitante, nombre = p_nombre, capacidad = p_capacidad, categoria = p_categoria, fecha_inicio = p_fecha_inicio, fecha_final = p_fecha_final
+        where id_alojamiento = p_id_alojamiento;
+    end if;
+end //
+delimiter ;
