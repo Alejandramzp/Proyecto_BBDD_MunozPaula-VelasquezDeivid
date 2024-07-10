@@ -32,7 +32,6 @@ create table parque (
 create table parque_departamento (
     id_parque INT,
     id_departamento INT,
-    PRIMARY KEY (id_parque, id_departamento),
     Foreign Key (id_parque) REFERENCES parque(id_parque),
     Foreign Key (id_departamento) REFERENCES departamento(id_departamento)
 );
