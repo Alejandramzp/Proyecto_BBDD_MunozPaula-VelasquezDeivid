@@ -33,6 +33,9 @@ delimiter ;
 
 call actualizar_entidad(2, 'Hola mundo');
 select * from entidad;
+
+create view ver_entidad as select id_entidad, nombre from entidad;
+
 -- Añadir un departamento
 delimiter //
 create procedure añadir_departamento(d_id_entidad int, d_nombre VARCHAR(100), d_capital VARCHAR(100))
@@ -67,6 +70,8 @@ DELIMITER ;
 
 call actualizar_departamento(1, 1, 'Condinamarca', 'Bogota');
 select * from departamento;
+
+create view ver_departamento as select id_departamento, id_entidad, nombre, capital from departamento;
 
 -- Añadir parque natural
 
@@ -104,6 +109,8 @@ end //
 delimiter ;
 
 call actualizar_parque(1, 'Chicamocha', '2000-01-11', 12000.22, 2, 1);
+
+create view ver_parque as select id_parque, nombre, fecha_declaracion, superficie, N_de_entradas, id_entidad from parque;
 
 -- Añadir relacion entre parque_departamento
 
@@ -146,6 +153,7 @@ delimiter ;
 
 call actualizar_parquedepartamento(1, 1, 1, 1);
 
+create view ver_relacion_parque_departamento as select id_parque, id_departamento from parque_departamento;
 
 -- Añadir un area del parque
 delimiter //
@@ -178,6 +186,8 @@ begin
 end //
 delimiter ;
 
+create view ver_area as select id_area, id_parque, nombre, extension from area;
+
 -- Añadir nueva especie en area especifica
 delimiter //
 create procedure añadir_especie (e_id_area int, e_tipo enum('Vegetales', 'Animales', 'Minerales'), e_nombre_cientifico varchar(100), e_nombre_vulgar varchar(100), e_cantidad int(10))
@@ -208,6 +218,8 @@ begin
     end if;
 end //
 delimiter ;
+
+create view ver_especies as select id_especie, id_area, tipo, nombre_cientifico, nombre_vulgar, cantidad from especie;
 
 -- Añadir personal
 delimiter //
@@ -240,6 +252,8 @@ begin
     end if;
 end //
 delimiter ;
+
+create view ver_personal as select id_personal, id_parque, cedula, nombre, direccion, telefono, celular, sueldo from personal;
 
 -- Añadir un personal_gestion
 delimiter //
@@ -304,6 +318,8 @@ begin
 end //
 delimiter ;
 
+create view ver_personal_gestion as select id_gestion, id_personal, n_entrada from personal_gestion;
+
 -- Añadir personal_vigilancia
 delimiter //
 create procedure añadir_personal_vigilancia(p_id_personal int, p_id_area int, p_tipo_vehiculo varchar(100), p_marca_vehiculo varchar(100))
@@ -338,6 +354,8 @@ begin
 end //
 delimiter ;
 
+create view ver_personal_vigilancia as select id_vigilancia, id_personal, id_area, tipo_vehiculo, marca_vehiculo from personal_vigilancia;
+
 -- Añadir personal_conservacion
 delimiter //
 create procedure añadir_personal_conservacion(p_id_personal int, p_id_area int, p_especialidad ENUM('limpieza', 'caminos', 'alojamiento'))
@@ -371,6 +389,8 @@ begin
 end //
 delimiter ;
 
+create view ver_personal_conservacion as select id_conservacion, id_personal, id_area, especialidad from personal_conservacion;
+
 -- Añadir personal_investigador
 delimiter //
 create procedure añadir_personal_investigador(p_id_personal int, p_titulacion varchar(100))
@@ -400,6 +420,8 @@ begin
 end //
 delimiter ;
 
+create view ver_personal_investigador as select id_investigador, id_personal, titulacion from personal_investigador;
+
 -- Añadir proyecto
 delimiter //
 create procedure añadir_proyecto (p_nombre varchar(100), p_presupuesto decimal(10,2), p_fecha_inicio date, p_fecha_fin date)
@@ -422,6 +444,8 @@ begin
     end if;
 end //
 delimiter ;
+
+create view ver_proyecto as select id_proyecto, nombre, presupuesto, fecha_inicio, fecha_fin from proyecto;
 
 -- Relaciona una investigacion
 delimiter //
@@ -468,6 +492,8 @@ begin
 end //
 delimiter ;
 
+create view ver_investigacion as select id_proyecto, id_investigador, id_especie from investigacion;
+
 -- Añadir visitante
 delimiter //
 create procedure añadir_visitante(v_id_personal_gestion int, v_cedula varchar(20), v_nombre varchar(100), v_direccion varchar(100), v_profesion varchar(100))
@@ -496,6 +522,8 @@ begin
     end if;
 end //
 delimiter ;
+
+create view ver_visitantes as select id_visitante, id_personal_gestion, cedula, nombre, direccion, profesion from visitante;
 
 -- añadir alojamiento
 delimiter //
@@ -565,3 +593,5 @@ begin
     end if;
 end //
 delimiter ;
+
+create view ver_alojamientos as select id_alojamiento, id_visitante, nombre, capacidad, categoria, fecha_inicio, fecha_final from alojamiento;
