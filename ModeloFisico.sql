@@ -3,7 +3,7 @@
 -- ################################
 
 create database Ambientales;
-
+DROP DATABASE Ambientales;
 use Ambientales;
 
 create table entidad (
@@ -58,11 +58,11 @@ create table especie (
 create table personal (
     id_personal INT AUTO_INCREMENT PRIMARY KEY,
     id_parque INT NOT NULL,
-    cedula VARCHAR(20) UNIQUE NOT NULL,
+    cedula VARCHAR(20) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
     telefono VARCHAR(20),
-    celular VARCHAR(20) NOT NULL,
+    celular VARCHAR(20),
     sueldo DECIMAL(10,2) NOT NULL 
 );
 
@@ -121,7 +121,7 @@ create table visitante(
     id_visitante INT AUTO_INCREMENT PRIMARY KEY,
     id_personal_gestion INT NOT NULL,
     Foreign Key (id_personal_gestion) REFERENCES personal_gestion(id_gestion),
-    cedula VARCHAR(20) UNIQUE NOT NULL,
+    cedula VARCHAR(20) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
     profesion VARCHAR(100)
