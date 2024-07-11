@@ -19,7 +19,7 @@ from departamento d
 inner join parque_departamento pd on d.id_departamento = pd.id_departamento
 inner join parque p on pd.id_parque = p.id_parque;
 
-
+create index idx_proyecto_presupuesto on proyecto(presupuesto);
 -- observar investigacion por id
 select p.nombre AS nombre_proyecto, p.presupuesto, p.fecha_inicio, p.fecha_fin, pi.titulacion, per.nombre AS nombre_personal, e.nombre_cientifico, e.nombre_vulgar, e.tipo, e.cantidad
 from investigacion i
@@ -36,3 +36,12 @@ join parque pa ON p.id_parque = pa.id_parque
 join personal_vigilancia pv ON p.id_personal = pv.id_personal
 join area a ON pv.id_area = a.id_area
 where p.id_personal = 3;
+
+
+create index idx_especie_cantidad on especie(cantidad);
+-- Cantidad de especies por parque
+select p.nombre as nombreParque, e.nombre_vulgar, e.cantidad as CantidadDeEspecie
+from parque p
+join area a on p.id_parque = a.id_parque
+join especie e on a.id_area = e.id_area;
+ 

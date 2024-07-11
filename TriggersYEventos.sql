@@ -26,6 +26,11 @@ begin
 end //
 delimiter ;
 
+INSERT INTO visitante (id_personal_gestion, cedula, nombre, direccion, profesion)
+VALUES (1, '1234567890', 'Juan Perez', 'Calle Falsa 123', 'Ingeniero');
+
+SELECT * FROM registro_visitante;
+
 delimiter //
 create trigger after_visitante_update
 after update on visitante
@@ -35,6 +40,12 @@ begin
     value (new.id_visitante, new.id_personal_gestion, new.cedula, new.nombre, new.direccion, new.profesion);
 end //
 delimiter ;
+
+UPDATE visitante
+SET nombre = 'Juan P. Perez', direccion = 'Avenida Siempre Viva 742', profesion = 'Arquitecto'
+WHERE id_visitante = 1;
+
+SELECT * FROM registro_visitante;
 
 -- Evento para subir el sueldo de los empleados anualmente un 10%
 delimiter //
@@ -47,3 +58,5 @@ begin
     set sueldo = sueldo * 1.10;
 end //
 delimiter ;
+
+select * from personal;

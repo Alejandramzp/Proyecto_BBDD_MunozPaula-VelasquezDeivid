@@ -5,6 +5,21 @@
 use Ambientales;
 
 
+-- Superficie total de un parque
+delimiter //
+create function superficie_total_parque (p_id_parque int) returns decimal(10,2) DETERMINISTIC
+begin
+    declare v_superficie_total decimal(10,2);
+
+    select sum(extension) into v_superficie_total
+    from area 
+    where id_parque = p_id_parque;
+
+    return v_superficie_total;
+end //
+delimiter ;
+select superficie_total_parque(1) as superficie_total_parque_1;
+
 -- Añadir una Entidad
 DELIMITER //
 create procedure añadir_entidad (e_nombre VARCHAR(100))
