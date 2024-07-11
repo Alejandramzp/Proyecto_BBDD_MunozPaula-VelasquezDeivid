@@ -14,8 +14,6 @@ begin
 end //
 DELIMITER ;
 
-call añadir_entidad('Ministerio de educacion ambiental');
-
 -- Actualizar una Entidad por su id
 
 delimiter //
@@ -31,10 +29,9 @@ begin
 end //
 delimiter ;
 
-call actualizar_entidad(2, 'Hola mundo');
-select * from entidad;
-
 create view ver_entidad as select id_entidad, nombre from entidad;
+select * from ver_entidad;
+
 
 -- Añadir un departamento
 delimiter //
@@ -48,8 +45,6 @@ begin
     end if;
 end //
 delimiter ;
-
-call añadir_departamento (1, 'Santander', 'Bucaramanga');
 
 -- Actualizar departamento por su id
 
@@ -68,10 +63,9 @@ begin
 end //
 DELIMITER ;
 
-call actualizar_departamento(1, 1, 'Condinamarca', 'Bogota');
-select * from departamento;
+create view ver_departamento as select id_departamento, id_entidad, nombre, capital from departamento; 
 
-create view ver_departamento as select id_departamento, id_entidad, nombre, capital from departamento;
+select * from ver_departamento;
 
 -- Añadir parque natural
 
@@ -86,10 +80,6 @@ begin
     end if;
 end //
 delimiter ;
-
-call añadir_parque('Tayrona', '2012-06-21', 50000.20, 12, 1);
-
-select * from parque;
 
 -- Actualizar parque natural por su id
 
@@ -108,8 +98,6 @@ begin
 end //
 delimiter ;
 
-call actualizar_parque(1, 'Chicamocha', '2000-01-11', 12000.22, 2, 1);
-
 create view ver_parque as select id_parque, nombre, fecha_declaracion, superficie, N_de_entradas, id_entidad from parque;
 
 -- Añadir relacion entre parque_departamento
@@ -127,8 +115,6 @@ begin
     end if;
 end //
 delimiter ;
-
-call añadir_parquedepartamento(1, 1);
 
 -- Actualizar relacion entre parque_departamento segun el id de parque y el departamento
 
@@ -151,8 +137,6 @@ begin
 end //
 delimiter ;
 
-call actualizar_parquedepartamento(1, 1, 1, 1);
-
 create view ver_relacion_parque_departamento as select id_parque, id_departamento from parque_departamento;
 
 -- Añadir un area del parque
@@ -167,8 +151,6 @@ begin
     end if;
 end //
 delimiter ;
-
-call añadir_area(1, 'motañosa', 1200.22);
 
 -- Actualizar area del parque por id
 delimiter //
@@ -201,8 +183,6 @@ begin
 end //
 delimiter ;
 
-call añadir_especie(1, 'Animales', 'Lasius niger', 'hormiga negra de jardineria', 200);
-
 -- Actualizar especie por su id
 delimiter //
 create procedure actualizar_especie (e_id_especie int, e_id_area int, e_tipo enum('Vegetales', 'Animales', 'Minerales'), e_nombre_cientifico varchar(100), e_nombre_vulgar varchar(100), e_cantidad int(10))
@@ -234,8 +214,6 @@ begin
 end //
 delimiter ;
 
-call añadir_personal(1, '1096701633', 'Deivid Velasquez Gutierrez', 'calle 84 #43-2', '', '3178925556', 3000000.00);
-select * from personal;
 
 -- Actualizar personal por id
 delimiter //
@@ -285,7 +263,6 @@ begin
 end //
 delimiter ;
 
-call añadir_personal_gestion (1, 1);
 
 -- actualizar personal de gestion
 delimiter //
