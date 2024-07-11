@@ -1,5 +1,4 @@
-![Logo](https://cdn.icon-icons.com/icons2/2415/PNG/512/mysql_original_wordmark_logo_icon_146417.png )
-
+![Logo](https://www.ivankristianto.com/uploads/2011/01/mysql-logo-800x334.jpg)
 
 # Proyecto BBDD Los Ambientales
 
@@ -17,11 +16,21 @@ El Ministerio del Medio Ambiente ha decidido crear un Software que permita manej
 8. Del personal del parque se guarda el número de cedula, nombre, dirección, teléfonos (incluido móvil) y sueldo. Se distinguen los siguientes tipos de personal: 8.1. 001: Personal de Gestión: Registra los datos de los visitantes del parque y están ubicados en las entradas del mismo, las cuales están identificadas con un número). 8.2. 002: Personal de Vigilancia: Vigila un área determinada del parque que recorre en un vehículo el cual está identificado por un tipo y una marca). 8.3. 003: Personal de Conservación: Mantiene y conserva un área determinada del parque. Cada uno lo realiza en una especialidad determinada (Limpieza, Caminos, etc.). 8.4. 004: Personal Investigador: Tiene una titulación y realizan funciones (incluso en equipo), a nivel de proyectos de investigación sobre una determinada especie. Un investigador trabaja en un proyecto analizando varias especies, una especie puede ser investigada por un investigador en varios proyectos y en un proyecto una especie puede ser investigada por varios investigadores.
 9. Un proyecto de investigación tiene un presupuesto y un periodo de realización.
 10. De un visitante se tiene identificación, nombre, dirección y profesión, puede alojarse en cualquiera de los alojamientos de los que dispone el parque los cuales tienen capacidad limitada y una categoría establecida.
+    
+## Caso de Estudio
 
+- [Recurso Base](https://hallowed-slug-719.notion.site/P-BD-1-Los-Ambientales-954b4c47d2464f7aa4ff615d810654a6)
+  
 ## Informe
 
 - [Proyecto Mysql](https://docs.google.com/document/d/1-uz8846Da79dj87eIqwhd4WXTReOIt8LLmsTA4-sg_w/edit?usp=sharing)
+  
 ## Desarrolladores
 
 - [@Alejandramzp](https://github.com/Alejandramzp)
 - [@DeividVelasquez](https://github.com/DeividVelasquez)
+
+## Herramientas de Desarrollo
+
+![Logo](https://betaingegneria.it/wp-content/uploads/2020/11/mysql-1-300x297.png)
+
