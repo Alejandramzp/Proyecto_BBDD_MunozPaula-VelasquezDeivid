@@ -1,6 +1,6 @@
--- ################################
--- ###### Triggers y Eventos ######
--- ################################
+-- ################################################
+-- ###### Triggers + Eventos + Transacciones ######
+-- ################################################
 
 use Ambientales;
 
@@ -60,3 +60,39 @@ end //
 delimiter ;
 
 select * from personal;
+
+-- Transacción para registrar un nuevo proyecto de investigación
+
+START TRANSACTION;
+
+INSERT INTO proyecto (nombre, presupuesto, fecha_inicio, fecha_fin)
+VALUES ('Ecología del Laurel en Ecosistemas Montañosos', 50000, '2024-06-17', '2025-05-18');
+
+-- Obtenemos el ID del proyecto insertado
+SET @id_proyecto = LAST_INSERT_ID();
+
+-- Insertamos el investigador asociado al proyecto
+INSERT INTO personal_investigador (id_personal, titulacion)
+VALUES (101, 'Ecólogo Especialista en Vegetación');
+
+-- Obtenemos el ID del investigador insertado
+SET @id_investigador = LAST_INSERT_ID();
+
+-- Insertamos las especies involucradas en la investigación
+INSERT INTO especie (id_area, tipo, nombre_cientifico, nombre_vulgar, cantidad)
+VALUES 
+    (16, 'Vegetales', 'Ocotea bullata', 'Laurel', 482);
+
+-- Obtenemos el ID de la especie insertada
+SET @id_especie = LAST_INSERT_ID();
+
+-- Insertamos la relación entre el proyecto, los investigadores y las especies
+INSERT INTO investigacion (id_proyecto, id_investigador, id_especie)
+VALUES 
+    (@id_proyecto, @id_investigador, @id_especie);
+
+-- Confirmar la transacción realizada
+COMMIT;
+
+-- Deshacer los Cambios realizados
+ROLLBACK;
